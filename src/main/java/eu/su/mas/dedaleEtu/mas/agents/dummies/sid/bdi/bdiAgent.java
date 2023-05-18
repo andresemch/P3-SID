@@ -1,5 +1,6 @@
 package eu.su.mas.dedaleEtu.mas.agents.dummies.sid.bdi;
 
+import bdi4jade.core.BDIAgent;
 import bdi4jade.belief.Belief;
 import bdi4jade.belief.TransientBelief;
 import bdi4jade.belief.TransientPredicate;
@@ -24,8 +25,8 @@ import java.util.Set;
 
 import static eu.su.mas.dedaleEtu.mas.agents.dummies.sid.bdi.Constants.*;
 
-public class BDIAgent extends SingleCapabilityAgent {
-    public BDIAgent() {
+public class bdiAgent extends SingleCapabilityAgent {
+    public bdiAgent() {
         // Create initial beliefs
         Belief iAmRegistered = new TransientPredicate(I_AM_REGISTERED, false);
         Belief ontology = new TransientBelief(ONTOLOGY, loadOntology());
