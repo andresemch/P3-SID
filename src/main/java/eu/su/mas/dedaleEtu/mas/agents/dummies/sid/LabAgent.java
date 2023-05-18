@@ -29,8 +29,9 @@ public class LabAgent extends AbstractDedaleAgent {
         //use them as parameters for your behaviours is you want
         List<Behaviour> lb = new ArrayList<>();
 
+
         // MANDATORY TO ALLOW YOUR AGENT TO BE DEPLOYED CORRECTLY
-        addBehaviour(new startMyBehaviours(this, lb));
+        addBehaviour(new startMyBehaviours(this, behavioursList()));
     }
 
     private List<Behaviour> behavioursList() {

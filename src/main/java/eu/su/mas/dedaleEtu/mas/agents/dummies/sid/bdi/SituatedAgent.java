@@ -5,6 +5,7 @@ import eu.su.mas.dedale.mas.agent.behaviours.platformManagment.startMyBehaviours
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
+import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -16,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SituatedAgent extends AbstractDedaleAgent {
+
+    AID agentSearched;
     @Override
     protected void setup() {
         super.setup();
@@ -36,8 +39,27 @@ public class SituatedAgent extends AbstractDedaleAgent {
                 } catch (FIPAException e) {
                     e.printStackTrace();
                 }
-
             }
+        });
+        lb.add(new CyclicBehaviour() {
+            boolean finished = false;
+            @Override
+            public void action() {
+                while (!finished) {
+                    try {
+                        System.out.println("BUSCANDO");
+                        agentSearched = searchAgent();
+                        if (agentSearched != null) finished = true;
+                    } catch (FIPAException e) {
+                        throw new RuntimeException(e);
+                    }
+                    if (finished) {
+                        System.out.println("Situated ha encontrado a bdi");
+                        System.out.println(agentSearched);
+                    }
+                }
+            }
+
         });
         addBehaviour(new startMyBehaviours(this, lb));
     }
@@ -45,7 +67,8 @@ public class SituatedAgent extends AbstractDedaleAgent {
     private AID searchAgent() throws FIPAException {
         DFAgentDescription template = new DFAgentDescription();
         ServiceDescription templateSd = new ServiceDescription();
-        //templateSd.setType("agentCollect");  !!!!!!!!!!!
+        //templateSd.setName("deliberative-agent");
+        templateSd.setType("bdi");
         template.addServices(templateSd);
 
         SearchConstraints sc = new SearchConstraints();
