@@ -4,14 +4,15 @@ import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedale.mas.agent.behaviours.platformManagment.startMyBehaviours;
 import jade.core.AID;
 import jade.core.Agent;
-import jade.core.behaviours.Behaviour;
-import jade.core.behaviours.CyclicBehaviour;
-import jade.core.behaviours.OneShotBehaviour;
+import jade.core.behaviours.*;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.SearchConstraints;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
+import jade.domain.FIPANames;
+import jade.lang.acl.ACLMessage;
+import javafx.animation.SequentialTransition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,26 +42,57 @@ public class SituatedAgent extends AbstractDedaleAgent {
                 }
             }
         });
-        lb.add(new CyclicBehaviour() {
-            boolean finished = false;
+        SequentialBehaviour seq = new SequentialBehaviour() {};
+        seq.addSubBehaviour(new SimpleBehaviour() {
             @Override
             public void action() {
-                while (!finished) {
+                try {
+                    agentSearched = searchAgent();
+                } catch (FIPAException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            @Override
+            public boolean done() {
+                return agentSearched != null;
+            }
+        });
+        seq.addSubBehaviour(new SimpleBehaviour() {
+            @Override
+            public void action() {
+                List obs = observe();
+                ACLMessage informMess = new ACLMessage(ACLMessage.INFORM);
+                informMess.setPerformative(ACLMessage.INFORM);
+                informMess.setContent(obs.toString());
+            }
+
+            @Override
+            public boolean done() {
+                return false;
+            }
+        });
+        /*lb.add(new CyclicBehaviour() {
+            boolean finishedSearch = false;
+            @Override
+            public void action() {
+                while (!finishedSearch) {
                     try {
-                        System.out.println("BUSCANDO");
                         agentSearched = searchAgent();
-                        if (agentSearched != null) finished = true;
+                        if (agentSearched != null) finishedSearch = true;
                     } catch (FIPAException e) {
                         throw new RuntimeException(e);
                     }
-                    if (finished) {
+                    if (finishedSearch) {
                         System.out.println("Situated ha encontrado a bdi");
                         System.out.println(agentSearched);
                     }
                 }
             }
 
-        });
+        });*/
+
+
         addBehaviour(new startMyBehaviours(this, lb));
     }
 

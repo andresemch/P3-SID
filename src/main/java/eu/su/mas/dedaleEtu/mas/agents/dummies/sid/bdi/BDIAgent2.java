@@ -51,6 +51,7 @@ public class BDIAgent2 extends SingleCapabilityAgent {
         // Add initial desires
         Goal registerGoal = new PredicateGoal(I_AM_REGISTERED, true);
         Goal findSituatedGoal = new SPARQLGoal(ONTOLOGY, QUERY_SITUATED_AGENT);
+        //Goal
         addGoal(registerGoal);
         addGoal(findSituatedGoal);
 
@@ -65,6 +66,7 @@ public class BDIAgent2 extends SingleCapabilityAgent {
                 findSituatedTemplate, FindSituatedPlanBody.class);
         Plan keepMailboxEmptyPlan = new DefaultPlan(MessageTemplate.MatchAll(),
                 KeepMailboxEmptyPlanBody.class);
+        //Plan
 
         // Init plan library
         getCapability().getPlanLibrary().addPlan(registerPlan);
