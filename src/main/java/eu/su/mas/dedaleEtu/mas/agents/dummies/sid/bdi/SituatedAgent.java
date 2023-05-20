@@ -1,5 +1,6 @@
 package eu.su.mas.dedaleEtu.mas.agents.dummies.sid.bdi;
 
+import eu.su.mas.dedale.env.gs.gsLocation;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedale.mas.agent.behaviours.platformManagment.startMyBehaviours;
 import jade.core.AID;
@@ -90,6 +91,18 @@ public class SituatedAgent extends AbstractDedaleAgent {
             public boolean done() {
                 return done;
             }
+        });
+        MessageTemplate mt = AchieveREResponder.createMessageTemplate(FIPANames.InteractionProtocol.FIPA_REQUEST);
+
+        seq.addSubBehaviour(new AchieveREResponder(this, mt) {
+            protected ACLMessage prepareResultNotification(ACLMessage requ, ACLMessage resp) {
+                System.out.println("Responder has received the following message:"+requ);
+                //gsLocation l=  new gsLocation(requ.getContent());
+               // moveTo(l);
+                ACLMessage informDone = requ.createReply();
+                informDone.setPerformative(ACLMessage.INFORM);
+                informDone.setContent("inform done");
+                return informDone; }
         });
         /*lb.add(new CyclicBehaviour() {
             boolean finishedSearch = false;

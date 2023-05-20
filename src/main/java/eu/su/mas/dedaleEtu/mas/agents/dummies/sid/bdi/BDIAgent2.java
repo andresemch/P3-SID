@@ -14,6 +14,7 @@ import bdi4jade.reasoning.DefaultBeliefRevisionStrategy;
 import bdi4jade.reasoning.DefaultDeliberationFunction;
 import bdi4jade.reasoning.DefaultOptionGenerationFunction;
 import bdi4jade.reasoning.DefaultPlanSelectionStrategy;
+import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedale.mas.agent.behaviours.platformManagment.startMyBehaviours;
 import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation;
 import jade.core.Agent;
