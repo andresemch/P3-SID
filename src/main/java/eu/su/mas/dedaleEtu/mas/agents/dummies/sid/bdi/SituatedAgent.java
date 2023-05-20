@@ -98,14 +98,22 @@ public class SituatedAgent extends AbstractDedaleAgent {
 
         seq.addSubBehaviour(new AchieveREResponder(this, mt) {
             protected ACLMessage prepareResultNotification(ACLMessage requ, ACLMessage resp) {
-                System.out.println("Responder has received the following message:"+requ);
                 //gsLocation l=  new gsLocation(requ.getContent());
                // moveTo(l);
+                //requ=receive();
+                System.out.println("Responder has received the following message:"+requ);
+                gsLocation nodo= new gsLocation(requ.getContent());
+                moveTo(nodo);
                 ACLMessage informDone = requ.createReply();
                 informDone.setPerformative(ACLMessage.INFORM);
-                informDone.setContent("inform done");
-                return informDone; }
+                if(getCurrentPosition()==nodo){
+                informDone.setContent("inform done, me he movido");
+                }
+                informDone.setContent("inform not done, no me he movido");
+                return informDone;
+            }
         });
+
         /*lb.add(new CyclicBehaviour() {
             boolean finishedSearch = false;
             @Override

@@ -28,7 +28,7 @@ public class FindSituatedPlanBody extends BeliefGoalPlanBody {
             if (results.length > 0) {
                 DFAgentDescription dfd = results[0];
                 AID provider = dfd.getName();
-                System.out.println("Found situated! " + provider.getName());
+                System.out.println("Found situated! " + provider.getName()+ "& THE AID IS: "+ provider);
                 updateOntology(provider.getLocalName());
                 setEndState(Plan.EndState.SUCCESSFUL);
             }
