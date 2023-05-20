@@ -51,13 +51,15 @@ public class BDIAgent2 extends SingleCapabilityAgent {
         // Add initial desires
         Goal registerGoal = new PredicateGoal(I_AM_REGISTERED, true);
         Goal findSituatedGoal = new SPARQLGoal(ONTOLOGY, QUERY_SITUATED_AGENT);
-        //Goal
+        Goal receiveMessGoal = new PredicateGoal(RECEIVE_INITIAL_POS,true); //
         addGoal(registerGoal);
         addGoal(findSituatedGoal);
+        addGoal(receiveMessGoal); //
 
         // Declare goal templates
         GoalTemplate registerGoalTemplate = matchesGoal(registerGoal);
         GoalTemplate findSituatedTemplate = matchesGoal(findSituatedGoal);
+        GoalTemplate receiveMessGoalTemplate = matchesGoal(receiveMessGoal); //
 
         // Assign plan bodies to goals
         Plan registerPlan = new DefaultPlan(
@@ -66,12 +68,13 @@ public class BDIAgent2 extends SingleCapabilityAgent {
                 findSituatedTemplate, FindSituatedPlanBody.class);
         Plan keepMailboxEmptyPlan = new DefaultPlan(MessageTemplate.MatchAll(),
                 KeepMailboxEmptyPlanBody.class);
-        //Plan
+        Plan receiveMessPlan = new DefaultPlan(receiveMessGoalTemplate, receiveMessPlanBody.class); //
 
         // Init plan library
         getCapability().getPlanLibrary().addPlan(registerPlan);
         getCapability().getPlanLibrary().addPlan(findSituatedPlan);
         getCapability().getPlanLibrary().addPlan(keepMailboxEmptyPlan);
+        getCapability().getPlanLibrary().addPlan(receiveMessPlan); //
 
         // Init belief base
         getCapability().getBeliefBase().addBelief(iAmRegistered);

@@ -8,4 +8,6 @@ public class Constants {
                     "SELECT ?Agent where {" +
                     " ?Agent a example:Agent ."+
                     "}";
+
+    public static String RECEIVE_INITIAL_POS = "ReceiveInitialPos";
 }

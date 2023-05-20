@@ -14,6 +14,8 @@ import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import javafx.animation.SequentialTransition;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,9 +48,11 @@ public class SituatedAgent extends AbstractDedaleAgent {
         seq.addSubBehaviour(new SimpleBehaviour() {
             @Override
             public void action() {
+                System.out.println("2. search");
                 try {
+                    Thread.sleep(2000);
                     agentSearched = searchAgent();
-                } catch (FIPAException e) {
+                } catch (FIPAException | InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -59,17 +63,32 @@ public class SituatedAgent extends AbstractDedaleAgent {
             }
         });
         seq.addSubBehaviour(new SimpleBehaviour() {
+            boolean done = false;
             @Override
             public void action() {
+                System.out.println("3. send");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
                 List obs = observe();
                 ACLMessage informMess = new ACLMessage(ACLMessage.INFORM);
                 informMess.setPerformative(ACLMessage.INFORM);
-                informMess.setContent(obs.toString());
+                try {
+                    informMess.setContentObject((Serializable) obs);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                informMess.setSender(this.getAgent().getAID());
+                informMess.addReceiver(agentSearched);
+                send(informMess);
+                done = true;
             }
 
             @Override
             public boolean done() {
-                return false;
+                return done;
             }
         });
         /*lb.add(new CyclicBehaviour() {
@@ -92,6 +111,7 @@ public class SituatedAgent extends AbstractDedaleAgent {
 
         });*/
 
+        lb.add(seq);
 
         addBehaviour(new startMyBehaviours(this, lb));
     }
@@ -113,7 +133,7 @@ public class SituatedAgent extends AbstractDedaleAgent {
         if (results.length > 0) {
             DFAgentDescription dfd = results[0];
             agenteBDI = dfd.getName();
-            System.out.println("The explorer AID is " + agenteBDI);
+            System.out.println("The bdiAgent AID is " + agenteBDI);
         }
         return agenteBDI;
     }
