@@ -10,4 +10,6 @@ public class Constants {
                     "}";
 
     public static String RECEIVE_INITIAL_POS = "ReceiveInitialPos";
+
+    public static String NO_OPEN_NODES_LEFT = "NoOpenNodesLeft";
 }

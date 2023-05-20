@@ -30,6 +30,7 @@ public class FindSituatedPlanBody extends BeliefGoalPlanBody {
                 AID provider = dfd.getName();
                 System.out.println("Found situated! " + provider.getName());
                 updateOntology(provider.getLocalName());
+                setEndState(Plan.EndState.SUCCESSFUL);
             }
             // if results.length == 0, no endState is set,
             // so the plan body will run again (if the goal still holds)

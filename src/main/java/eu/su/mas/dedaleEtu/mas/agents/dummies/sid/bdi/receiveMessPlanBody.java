@@ -1,5 +1,6 @@
 package eu.su.mas.dedaleEtu.mas.agents.dummies.sid.bdi;
 
+import bdi4jade.plan.Plan;
 import bdi4jade.plan.planbody.BeliefGoalPlanBody;
 import dataStructures.tuple.Couple;
 import eu.su.mas.dedale.env.Observation;
@@ -29,7 +30,7 @@ public class receiveMessPlanBody extends BeliefGoalPlanBody {
 
     @Override
     protected void execute() {
-        Agent agente = this.myAgent;
+        BDIAgent2 agente = (BDIAgent2) this.myAgent;
         ACLMessage msg = agente.receive();
         if (msg != null) {
             System.out.println("The message receive is " + msg.getContent());
@@ -70,6 +71,12 @@ public class receiveMessPlanBody extends BeliefGoalPlanBody {
             System.out.println("open nodes" + openNodes);
             System.out.println("closed nodes" + closedNodes);
             System.out.println("map " + map);
+
+            agente.setMap(map);
+            agente.setOpenNodes(openNodes);
+            agente.setClosedNodes(closedNodes);
+
+            setEndState(Plan.EndState.SUCCESSFUL);
         }
     }
 }

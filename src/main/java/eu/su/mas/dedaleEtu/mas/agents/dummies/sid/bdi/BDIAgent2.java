@@ -18,6 +18,7 @@ import bdi4jade.reasoning.DefaultDeliberationFunction;
 import bdi4jade.reasoning.DefaultOptionGenerationFunction;
 import bdi4jade.reasoning.DefaultPlanSelectionStrategy;
 import eu.su.mas.dedale.mas.agent.behaviours.platformManagment.startMyBehaviours;
+import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.OneShotBehaviour;
@@ -34,6 +35,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -42,6 +44,12 @@ import static eu.su.mas.dedaleEtu.mas.agents.dummies.sid.bdi.Constants.*;
 public class BDIAgent2 extends SingleCapabilityAgent {
 
     private static final String ONTOLOGY_BASE = "http://www.semanticweb.org/priyanka/ontologies/2023/3/untitled-ontology-17";
+
+    private MapRepresentation map;
+
+    private List<String> openNodes;
+
+    private Set<String> closedNodes;
 
     public BDIAgent2(){
         // Create initial beliefs
@@ -52,22 +60,31 @@ public class BDIAgent2 extends SingleCapabilityAgent {
         Goal registerGoal = new PredicateGoal(I_AM_REGISTERED, true);
         Goal findSituatedGoal = new SPARQLGoal(ONTOLOGY, QUERY_SITUATED_AGENT);
         Goal receiveMessGoal = new PredicateGoal(RECEIVE_INITIAL_POS,true); //
+        Goal noOpenNodesGoal = new PredicateGoal(NO_OPEN_NODES_LEFT, true);
+        //goals.add(registerGoal);
+        //goals.add(findSituatedGoal);
+        //goals.add(receiveMessGoal);
+        //goals.add(noOpenNodesGoal);
+        //SequentialGoal seqGoal= new SequentialGoal((List<Goal>) goals);
+        //addGoal(seqGoal);
         addGoal(registerGoal);
         addGoal(findSituatedGoal);
         addGoal(receiveMessGoal); //
+        addGoal(noOpenNodesGoal);
 
         // Declare goal templates
         GoalTemplate registerGoalTemplate = matchesGoal(registerGoal);
         GoalTemplate findSituatedTemplate = matchesGoal(findSituatedGoal);
         GoalTemplate receiveMessGoalTemplate = matchesGoal(receiveMessGoal); //
+        GoalTemplate noOpenNodesTemplate = matchesGoal(noOpenNodesGoal);
 
         // Assign plan bodies to goals
         Plan registerPlan = new DefaultPlan(
                 registerGoalTemplate, RegisterPlanBody.class);
         Plan findSituatedPlan = new DefaultPlan(
                 findSituatedTemplate, FindSituatedPlanBody.class);
-        Plan keepMailboxEmptyPlan = new DefaultPlan(MessageTemplate.MatchAll(),
-                KeepMailboxEmptyPlanBody.class);
+        //Plan keepMailboxEmptyPlan = new DefaultPlan(MessageTemplate.MatchAll(),
+        //        KeepMailboxEmptyPlanBody.class);
         Plan receiveMessPlan = new DefaultPlan(receiveMessGoalTemplate, receiveMessPlanBody.class); //
 
         // Init plan library
@@ -90,15 +107,6 @@ public class BDIAgent2 extends SingleCapabilityAgent {
         overridePlanSelectionStrategy();
 
 
-
-        Plan plan = new DefaultPlan(HelloWorldGoal.class,
-                HelloWorldPlanBody.class);
-        Plan plan2 = new DefaultPlan(HelloWorldGoal.class,ByeWorldPlanBody.class);
-        addGoal(new HelloWorldGoal("!"));
-        // 2 goals con el mismo plan se ejecutan de manera concurrente://
-        // addGoal(new HelloWorldGoal("2"));
-        getCapability().getPlanLibrary().addPlan(plan);
-        getCapability().getPlanLibrary().addPlan(plan2);
     }
 
     private void overrideBeliefRevisionStrategy() {
