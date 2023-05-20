@@ -46,7 +46,7 @@ public class BDIAgent2 extends SingleCapabilityAgent {
 
     private MapRepresentation map;
 
-    private List<String> openNodes;
+    private List<String> open_Nodes;
 
     private Set<String> closedNodes;
 
@@ -54,6 +54,7 @@ public class BDIAgent2 extends SingleCapabilityAgent {
         // Create initial beliefs
         Belief iAmRegistered = new TransientPredicate(I_AM_REGISTERED, false);
         Belief ontology = new TransientBelief(ONTOLOGY, loadOntology());
+        Belief openNodes= new TransientBelief("Open Nodes",open_Nodes);
 
         // Add initial desires
         //Set goals;
@@ -100,6 +101,7 @@ public class BDIAgent2 extends SingleCapabilityAgent {
         // Init belief base
         getCapability().getBeliefBase().addBelief(iAmRegistered);
         getCapability().getBeliefBase().addBelief(ontology);
+        getCapability().getBeliefBase().addBelief(openNodes);
 
         // Add a goal listener to track events
         enableGoalMonitoring();
@@ -116,9 +118,9 @@ public class BDIAgent2 extends SingleCapabilityAgent {
     public MapRepresentation getMap() {
         return this.map;
     }
-    public List<String> getOpenNodes() {
+   /* public List<String> getOpenNodes() {
         return this.openNodes;
-    }
+    }*/
 
     public Set<String> getClosedNodes() {
         return this.closedNodes;
@@ -127,9 +129,9 @@ public class BDIAgent2 extends SingleCapabilityAgent {
     public void setMap(MapRepresentation m) {
         this.map = m;
     }
-    public void setOpenNodes(List<String> on) {
+  /*  public void setOpenNodes(List<String> on) {
         this.openNodes = on;
-    }
+    }*/
 
     public void setClosedNodes(Set<String> cn) {
         this.closedNodes = cn;

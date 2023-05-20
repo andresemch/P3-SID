@@ -25,9 +25,9 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
             throw new RuntimeException(e);
         }
         BDIAgent2 agente = (BDIAgent2) this.myAgent;
-        System.out.println("Open nodes in FIPA " + agente.getOpenNodes());
+        System.out.println("Open nodes in FIPA " + agente.getCapability().getBeliefBase().getBelief("Open Nodes").getValue());
         if (agente.getClosedNodes() != null) {
-            List<String> openNodes= agente.getOpenNodes();
+            List<String> openNodes= (List<String>) agente.getCapability().getBeliefBase().getBelief("Open Nodes").getValue();
 
             ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
             request.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
@@ -37,7 +37,7 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
             ACLMessage inform=agente.receive();
             System.out.println("Protocol finished. Rational Effect achieved.Received the following message:" +inform);
 
-            if (agente.getOpenNodes().isEmpty()) {
+            if (((List<String>) agente.getCapability().getBeliefBase().getBelief("Open Nodes").getValue()).isEmpty()) {
                 setEndState(Plan.EndState.SUCCESSFUL);
             }
         }

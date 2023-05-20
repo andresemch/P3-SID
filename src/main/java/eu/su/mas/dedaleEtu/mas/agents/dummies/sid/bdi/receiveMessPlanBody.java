@@ -74,7 +74,8 @@ public class receiveMessPlanBody extends BeliefGoalPlanBody {
             System.out.println("map " + map);
 
             agente.setMap(map);
-            agente.setOpenNodes(openNodes);
+            //agente.setOpenNodes(openNodes);
+            agente.getCapability().getBeliefBase().updateBelief("Open Nodes",openNodes);
             agente.setClosedNodes(closedNodes);
 
             setEndState(Plan.EndState.SUCCESSFUL);
