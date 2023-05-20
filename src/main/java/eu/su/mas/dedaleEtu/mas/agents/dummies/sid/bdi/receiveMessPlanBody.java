@@ -52,6 +52,7 @@ public class receiveMessPlanBody extends BeliefGoalPlanBody {
             System.out.println("Nodos adyacentes " + lobs);
 
             String nextNode = null;
+            this.map.addNode(myPosition, MapRepresentation.MapAttribute.closed);
             for (Couple<Location, List<Couple<Observation, Integer>>> lob : lobs) {
                 String nodeId = String.valueOf(lob.getLeft());
                 if (!this.closedNodes.contains(nodeId)) {
