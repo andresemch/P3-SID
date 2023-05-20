@@ -79,4 +79,5 @@ public class receiveMessPlanBody extends BeliefGoalPlanBody {
             setEndState(Plan.EndState.SUCCESSFUL);
         }
     }
+
 }

@@ -7,10 +7,7 @@ import bdi4jade.core.GoalUpdateSet;
 import bdi4jade.core.SingleCapabilityAgent;
 import bdi4jade.event.GoalEvent;
 import bdi4jade.event.GoalListener;
-import bdi4jade.goal.Goal;
-import bdi4jade.goal.GoalStatus;
-import bdi4jade.goal.GoalTemplate;
-import bdi4jade.goal.PredicateGoal;
+import bdi4jade.goal.*;
 import bdi4jade.plan.DefaultPlan;
 import bdi4jade.plan.Plan;
 import bdi4jade.reasoning.DefaultBeliefRevisionStrategy;
@@ -43,6 +40,7 @@ import static eu.su.mas.dedaleEtu.mas.agents.dummies.sid.bdi.Constants.*;
 
 public class BDIAgent2 extends SingleCapabilityAgent {
 
+
     private static final String ONTOLOGY_BASE = "http://www.semanticweb.org/priyanka/ontologies/2023/3/untitled-ontology-17";
 
     private MapRepresentation map;
@@ -57,6 +55,7 @@ public class BDIAgent2 extends SingleCapabilityAgent {
         Belief ontology = new TransientBelief(ONTOLOGY, loadOntology());
 
         // Add initial desires
+        //Set goals;
         Goal registerGoal = new PredicateGoal(I_AM_REGISTERED, true);
         Goal findSituatedGoal = new SPARQLGoal(ONTOLOGY, QUERY_SITUATED_AGENT);
         Goal receiveMessGoal = new PredicateGoal(RECEIVE_INITIAL_POS,true); //
@@ -87,11 +86,15 @@ public class BDIAgent2 extends SingleCapabilityAgent {
         //        KeepMailboxEmptyPlanBody.class);
         Plan receiveMessPlan = new DefaultPlan(receiveMessGoalTemplate, receiveMessPlanBody.class); //
 
+        Plan noOpenNodesPlan = new DefaultPlan(noOpenNodesTemplate, noOpenNodesPlanBody.class);
+        //System.out.println("Open nodes en agente: "+openNodes);
+
         // Init plan library
         getCapability().getPlanLibrary().addPlan(registerPlan);
         getCapability().getPlanLibrary().addPlan(findSituatedPlan);
-        getCapability().getPlanLibrary().addPlan(keepMailboxEmptyPlan);
+        //getCapability().getPlanLibrary().addPlan(keepMailboxEmptyPlan);
         getCapability().getPlanLibrary().addPlan(receiveMessPlan); //
+        getCapability().getPlanLibrary().addPlan(noOpenNodesPlan);
 
         // Init belief base
         getCapability().getBeliefBase().addBelief(iAmRegistered);
@@ -108,6 +111,29 @@ public class BDIAgent2 extends SingleCapabilityAgent {
 
 
     }
+
+    public MapRepresentation getMap() {
+        return this.map;
+    }
+    public List<String> getOpenNodes() {
+        return this.openNodes;
+    }
+
+    public Set<String> getClosedNodes() {
+        return this.closedNodes;
+    }
+
+    public void setMap(MapRepresentation m) {
+        this.map = m;
+    }
+    public void setOpenNodes(List<String> on) {
+        this.openNodes = on;
+    }
+
+    public void setClosedNodes(Set<String> cn) {
+        this.closedNodes = cn;
+    }
+
 
     private void overrideBeliefRevisionStrategy() {
         this.getCapability().setBeliefRevisionStrategy(new DefaultBeliefRevisionStrategy() {
