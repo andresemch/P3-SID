@@ -133,10 +133,6 @@ public class SituatedAgent extends AbstractDedaleAgent {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                if(Objects.equals(getCurrentPosition().toString(), nodo.toString())){
-                    informDone.setContent("inform done, me he movido");
-                }
-                else informDone.setContent("inform not done, no me he movido");
                 return informDone;
             }
         });
