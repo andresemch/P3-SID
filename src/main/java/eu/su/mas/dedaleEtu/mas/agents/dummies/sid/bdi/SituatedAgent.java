@@ -119,17 +119,27 @@ public class SituatedAgent extends AbstractDedaleAgent {
                     nodosContiguos.add(node.getLeft().toString());
                 }
                 String pos = getCurrentPosition().toString();
+                ACLMessage informDone = requ.createReply();
                 if (nodosContiguos.contains(nodo.toString())) {
                     moveTo(nodo);
-                }
-                ACLMessage informDone = requ.createReply();
-                informDone.setPerformative(ACLMessage.INFORM);
+                    informDone.setPerformative(ACLMessage.INFORM);
 
-                Object[] content = {pos, nodosContiguos};
-                try {
-                    informDone.setContentObject(content);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+
+                    Object[] content = {pos, nodosContiguos};
+                    try {
+                        informDone.setContentObject(content);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                else{
+                    informDone.setPerformative(ACLMessage.REFUSE);
+                    Object[] content= {pos,nodo};
+                    try {
+                        informDone.setContentObject(content);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
                 return informDone;
             }
