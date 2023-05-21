@@ -14,6 +14,7 @@ import jade.proto.AchieveREInitiator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import static eu.su.mas.dedaleEtu.mas.agents.dummies.sid.bdi.Constants.*;
 
 public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
 
@@ -25,10 +26,11 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
             throw new RuntimeException(e);
         }
         BDIAgent2 agente = (BDIAgent2) this.myAgent;
+        List<String> openNodes= (List<String>) agente.getCapability().getBeliefBase().getBelief(OPEN_NODES).getValue();
+        Set<String> closedNodes = (Set<String>) agente.getCapability().getBeliefBase().getBelief(CLOSED_NODES).getValue();
+        MapRepresentation map= (MapRepresentation) agente.getCapability().getBeliefBase().getBelief(MAPA).getValue();
         System.out.println("Open nodes in FIPA " + agente.getCapability().getBeliefBase().getBelief("Open Nodes").getValue());
-        if (agente.getClosedNodes() != null) {
-            List<String> openNodes= (List<String>) agente.getCapability().getBeliefBase().getBelief("Open Nodes").getValue();
-
+        if (closedNodes != null) {
             ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
             request.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
             request.addReceiver(new AID("Situated", AID.ISLOCALNAME));
@@ -37,7 +39,7 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
             ACLMessage inform=agente.receive();
             System.out.println("Protocol finished. Rational Effect achieved.Received the following message:" +inform);
 
-            if (((List<String>) agente.getCapability().getBeliefBase().getBelief("Open Nodes").getValue()).isEmpty()) {
+            if (openNodes.isEmpty()) {
                 setEndState(Plan.EndState.SUCCESSFUL);
             }
         }

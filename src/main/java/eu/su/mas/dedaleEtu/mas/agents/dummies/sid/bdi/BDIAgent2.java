@@ -44,17 +44,19 @@ public class BDIAgent2 extends SingleCapabilityAgent {
 
     private static final String ONTOLOGY_BASE = "http://www.semanticweb.org/priyanka/ontologies/2023/3/untitled-ontology-17";
 
-    private MapRepresentation map;
+    private MapRepresentation mapa;
 
     private List<String> open_Nodes;
 
-    private Set<String> closedNodes;
+    private Set<String> closed_Nodes;
 
     public BDIAgent2(){
         // Create initial beliefs
         Belief iAmRegistered = new TransientPredicate(I_AM_REGISTERED, false);
         Belief ontology = new TransientBelief(ONTOLOGY, loadOntology());
-        Belief openNodes= new TransientBelief("Open Nodes",open_Nodes);
+        Belief openNodes= new TransientBelief(OPEN_NODES,open_Nodes);
+        Belief map= new TransientBelief(MAPA,mapa);
+        Belief closedNodes= new TransientBelief(CLOSED_NODES,closed_Nodes);
 
         // Add initial desires
         //Set goals;
@@ -102,6 +104,8 @@ public class BDIAgent2 extends SingleCapabilityAgent {
         getCapability().getBeliefBase().addBelief(iAmRegistered);
         getCapability().getBeliefBase().addBelief(ontology);
         getCapability().getBeliefBase().addBelief(openNodes);
+        getCapability().getBeliefBase().addBelief(closedNodes);
+        getCapability().getBeliefBase().addBelief(map);
 
         // Add a goal listener to track events
         enableGoalMonitoring();
@@ -115,12 +119,12 @@ public class BDIAgent2 extends SingleCapabilityAgent {
 
     }
 
-    public MapRepresentation getMap() {
+   /* public MapRepresentation getMap() {
         return this.map;
     }
    /* public List<String> getOpenNodes() {
         return this.openNodes;
-    }*/
+    }
 
     public Set<String> getClosedNodes() {
         return this.closedNodes;
@@ -129,14 +133,14 @@ public class BDIAgent2 extends SingleCapabilityAgent {
     public void setMap(MapRepresentation m) {
         this.map = m;
     }
-  /*  public void setOpenNodes(List<String> on) {
+   public void setOpenNodes(List<String> on) {
         this.openNodes = on;
-    }*/
+    }
 
     public void setClosedNodes(Set<String> cn) {
         this.closedNodes = cn;
     }
-
+*/
 
     private void overrideBeliefRevisionStrategy() {
         this.getCapability().setBeliefRevisionStrategy(new DefaultBeliefRevisionStrategy() {
