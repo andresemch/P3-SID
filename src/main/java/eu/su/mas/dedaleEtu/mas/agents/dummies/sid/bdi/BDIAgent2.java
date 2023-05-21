@@ -57,21 +57,16 @@ public class BDIAgent2 extends SingleCapabilityAgent {
         Belief openNodes= new TransientBelief("Open Nodes",open_Nodes);
 
         // Add initial desires
-        //Set goals;
         Goal registerGoal = new PredicateGoal(I_AM_REGISTERED, true);
         Goal findSituatedGoal = new SPARQLGoal(ONTOLOGY, QUERY_SITUATED_AGENT);
         Goal receiveMessGoal = new PredicateGoal(RECEIVE_INITIAL_POS,true); //
         Goal noOpenNodesGoal = new PredicateGoal(NO_OPEN_NODES_LEFT, true);
-        //goals.add(registerGoal);
-        //goals.add(findSituatedGoal);
-        //goals.add(receiveMessGoal);
-        //goals.add(noOpenNodesGoal);
-        //SequentialGoal seqGoal= new SequentialGoal((List<Goal>) goals);
-        //addGoal(seqGoal);
-        addGoal(registerGoal);
-        addGoal(findSituatedGoal);
-        addGoal(receiveMessGoal); //
-        addGoal(noOpenNodesGoal);
+        SequentialGoal seqGoal = new SequentialGoal(new Goal[] {registerGoal,findSituatedGoal,receiveMessGoal,noOpenNodesGoal});
+        //addGoal(registerGoal);
+        //addGoal(findSituatedGoal);
+        //addGoal(receiveMessGoal); //
+        //addGoal(noOpenNodesGoal);
+        addGoal(seqGoal);
 
         // Declare goal templates
         GoalTemplate registerGoalTemplate = matchesGoal(registerGoal);
@@ -118,9 +113,9 @@ public class BDIAgent2 extends SingleCapabilityAgent {
     public MapRepresentation getMap() {
         return this.map;
     }
-   /* public List<String> getOpenNodes() {
-        return this.openNodes;
-    }*/
+    public List<String> getOpenNodes() {
+        return this.open_Nodes;
+    }
 
     public Set<String> getClosedNodes() {
         return this.closedNodes;

@@ -1,5 +1,8 @@
 package eu.su.mas.dedaleEtu.mas.agents.dummies.sid.bdi;
 
+import dataStructures.tuple.Couple;
+import eu.su.mas.dedale.env.Location;
+import eu.su.mas.dedale.env.Observation;
 import eu.su.mas.dedale.env.gs.gsLocation;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedale.mas.agent.behaviours.platformManagment.startMyBehaviours;
@@ -15,7 +18,6 @@ import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.proto.AchieveREResponder;
-import javafx.animation.SequentialTransition;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -52,10 +54,15 @@ public class SituatedAgent extends AbstractDedaleAgent {
             @Override
             public void action() {
                 System.out.println("2. search");
-                try {
+                /*try {
                     Thread.sleep(2000);
                     agentSearched = searchAgent();
                 } catch (FIPAException | InterruptedException e) {
+                    throw new RuntimeException(e);
+                }*/
+                try {
+                    agentSearched = searchAgent();
+                } catch (FIPAException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -70,11 +77,11 @@ public class SituatedAgent extends AbstractDedaleAgent {
             @Override
             public void action() {
                 System.out.println("3. send");
-                try {
+                /*try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
-                }
+                }*/
                 List obs = observe();
                 ACLMessage informMess = new ACLMessage(ACLMessage.INFORM);
                 informMess.setPerformative(ACLMessage.INFORM);
@@ -106,10 +113,24 @@ public class SituatedAgent extends AbstractDedaleAgent {
                 moveTo(nodo);
                 ACLMessage informDone = requ.createReply();
                 informDone.setPerformative(ACLMessage.INFORM);
-                if(getCurrentPosition()==nodo){
-                informDone.setContent("inform done, me he movido");
+                /*if(getCurrentPosition().getLocationId().equals(nodo.getLocationId())){
+                    informDone.setContent("inform done, me he movido");
+                } else {
+                    informDone.setContent("inform not done, no me he movido");
+                }*/
+
+                List<Couple<Location, List<Couple<Observation, Integer>>>> obs = observe();
+                List<String> nodosContiguos = new ArrayList<>();
+                for (Couple node : obs) {
+                    nodosContiguos.add(node.getLeft().toString());
                 }
-                informDone.setContent("inform not done, no me he movido");
+                String pos = getCurrentPosition().toString();
+                Object[] content = {pos, nodosContiguos};
+                try {
+                    informDone.setContentObject(content);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 return informDone;
             }
         });

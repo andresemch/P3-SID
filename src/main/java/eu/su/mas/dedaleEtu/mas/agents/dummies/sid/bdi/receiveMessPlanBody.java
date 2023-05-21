@@ -45,11 +45,9 @@ public class receiveMessPlanBody extends BeliefGoalPlanBody {
             } catch (UnreadableException e) {
                 throw new RuntimeException(e);
             }
-            System.out.println("Object " + m);
             List<Couple<Location, List<Couple<Observation, Integer>>>> lobs = (List<Couple<Location, List<Couple<Observation, Integer>>>>) m;
             String myPosition = String.valueOf(lobs.get(0).getLeft());
             lobs.remove(0);
-            System.out.println("Nodos adyacentes " + lobs);
 
             String nextNode = null;
             this.map.addNode(myPosition, MapRepresentation.MapAttribute.closed);
