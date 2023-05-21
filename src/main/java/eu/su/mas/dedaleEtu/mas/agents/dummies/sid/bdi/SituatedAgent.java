@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SituatedAgent extends AbstractDedaleAgent {
 
@@ -106,10 +107,10 @@ public class SituatedAgent extends AbstractDedaleAgent {
                 moveTo(nodo);
                 ACLMessage informDone = requ.createReply();
                 informDone.setPerformative(ACLMessage.INFORM);
-                if(getCurrentPosition()==nodo){
-                informDone.setContent("inform done, me he movido");
+                if(Objects.equals(getCurrentPosition().toString(), nodo.toString())){
+                    informDone.setContent("inform done, me he movido");
                 }
-                informDone.setContent("inform not done, no me he movido");
+                else informDone.setContent("inform not done, no me he movido");
                 return informDone;
             }
         });
