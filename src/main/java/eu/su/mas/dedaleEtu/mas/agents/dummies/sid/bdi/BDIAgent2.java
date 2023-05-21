@@ -121,28 +121,28 @@ public class BDIAgent2 extends SingleCapabilityAgent {
 
     }
 
-   /* public MapRepresentation getMap() {
-        return this.map;
+    public MapRepresentation getMap() {
+        return this.mapa;
     }
-   /* public List<String> getOpenNodes() {
-        return this.openNodes;
+    public List<String> getOpenNodes() {
+        return this.open_Nodes;
     }
 
     public Set<String> getClosedNodes() {
-        return this.closedNodes;
+        return this.closed_Nodes;
     }
 
     public void setMap(MapRepresentation m) {
-        this.map = m;
+        this.mapa = m;
     }
    public void setOpenNodes(List<String> on) {
-        this.openNodes = on;
+        this.open_Nodes = on;
     }
 
     public void setClosedNodes(Set<String> cn) {
-        this.closedNodes = cn;
+        this.closed_Nodes = cn;
     }
-*/
+
 
     private void overrideBeliefRevisionStrategy() {
         this.getCapability().setBeliefRevisionStrategy(new DefaultBeliefRevisionStrategy() {

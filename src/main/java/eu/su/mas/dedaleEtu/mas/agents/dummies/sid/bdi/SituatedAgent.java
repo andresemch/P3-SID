@@ -112,14 +112,6 @@ public class SituatedAgent extends AbstractDedaleAgent {
                 //requ=receive();
                 System.out.println("Responder has received the following message:"+requ);
                 gsLocation nodo= new gsLocation(requ.getContent());
-                moveTo(nodo);
-                ACLMessage informDone = requ.createReply();
-                informDone.setPerformative(ACLMessage.INFORM);
-                /*if(getCurrentPosition().getLocationId().equals(nodo.getLocationId())){
-                    informDone.setContent("inform done, me he movido");
-                } else {
-                    informDone.setContent("inform not done, no me he movido");
-                }*/
 
                 List<Couple<Location, List<Couple<Observation, Integer>>>> obs = observe();
                 List<String> nodosContiguos = new ArrayList<>();
@@ -127,6 +119,12 @@ public class SituatedAgent extends AbstractDedaleAgent {
                     nodosContiguos.add(node.getLeft().toString());
                 }
                 String pos = getCurrentPosition().toString();
+                if (nodosContiguos.contains(nodo.toString())) {
+                    moveTo(nodo);
+                }
+                ACLMessage informDone = requ.createReply();
+                informDone.setPerformative(ACLMessage.INFORM);
+
                 Object[] content = {pos, nodosContiguos};
                 try {
                     informDone.setContentObject(content);

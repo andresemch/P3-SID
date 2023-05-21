@@ -2,10 +2,13 @@ package eu.su.mas.dedaleEtu.mas.agents.dummies.sid.bdi;
 
 import bdi4jade.plan.Plan;
 import bdi4jade.plan.planbody.BeliefGoalPlanBody;
+import dataStructures.tuple.Couple;
+import eu.su.mas.dedale.env.Observation;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedale.mas.agent.behaviours.platformManagment.startMyBehaviours;
 import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation;
 import jade.core.AID;
+import jade.core.Location;
 import jade.core.behaviours.Behaviour;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
@@ -32,10 +35,16 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
             throw new RuntimeException(e);
         }
         BDIAgent2 agente = (BDIAgent2) this.myAgent;
-        List<String> openNodes= (List<String>) agente.getCapability().getBeliefBase().getBelief(OPEN_NODES).getValue();
-        Set<String> closedNodes = (Set<String>) agente.getCapability().getBeliefBase().getBelief(CLOSED_NODES).getValue();
-        MapRepresentation map= (MapRepresentation) agente.getCapability().getBeliefBase().getBelief(MAPA).getValue();
-        System.out.println("Open nodes in FIPA " + agente.getCapability().getBeliefBase().getBelief("Open Nodes").getValue());
+
+        //List<String> openNodes= (List<String>) agente.getCapability().getBeliefBase().getBelief(OPEN_NODES).getValue();
+        //Set<String> closedNodes = (Set<String>) agente.getCapability().getBeliefBase().getBelief(CLOSED_NODES).getValue();
+        //MapRepresentation map= (MapRepresentation) agente.getCapability().getBeliefBase().getBelief(MAPA).getValue();
+        //System.out.println("Open nodes in FIPA " + agente.getCapability().getBeliefBase().getBelief("Open Nodes").getValue());
+
+        map = agente.getMap();
+        openNodes = agente.getOpenNodes();
+        closedNodes = agente.getClosedNodes();
+
         if (closedNodes != null) {
             ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
             request.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
@@ -54,18 +63,36 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
 
                 String position = m[0].toString();
                 List<String> nodosContiguos = (List<String>) m[1];
-
-                for (String node : nodosContiguos) {
-                    //if (!openNodes.contains(position) && !closedNodes.contains(node)) openNodes.add(node);
-
-
+                if (!closedNodes.contains(position)) {
+                    openNodes.remove(position);
+                    closedNodes.add(position);
                 }
+                for (String node : nodosContiguos) {
+                    if (!openNodes.contains(node) && !closedNodes.contains(node)) openNodes.add(node);
+                }
+
+                nodosContiguos.remove(0);
+                String nextNode = null;
+                this.map.addNode(position, MapRepresentation.MapAttribute.closed);
+                for (String nodeId : nodosContiguos) {
+                    if (!this.closedNodes.contains(nodeId)) {
+                        if (!this.openNodes.contains(nodeId)) {
+                            this.openNodes.add(nodeId);
+                            this.map.addNode(nodeId, MapRepresentation.MapAttribute.open);
+                            this.map.addEdge(position, nodeId);
+                        } else {
+                            //the node exist, but not necessarily the edge
+                            this.map.addEdge(position, nodeId);
+                        }
+                        if (nextNode == null) nextNode = nodeId;
+                    }
+                }
+                this.closedNodes.add(position);
 
                 System.out.println("Position: " + position);
                 System.out.println("Nodos contiguos: " + nodosContiguos);
-
                 System.out.println("Open nodes: " + openNodes);
-                //System.out.println("Closed nodes: " + closedNodes);
+                System.out.println("Closed nodes: " + closedNodes);
             }
 
             if (openNodes.isEmpty()) {

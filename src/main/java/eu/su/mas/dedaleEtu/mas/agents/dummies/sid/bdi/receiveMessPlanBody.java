@@ -36,7 +36,7 @@ public class receiveMessPlanBody extends BeliefGoalPlanBody {
         if (msg != null) {
             System.out.println("The message receive is " + msg.getContent());
 
-            map = new MapRepresentation();
+            this.map = new MapRepresentation();
             this.openNodes = new ArrayList<>();
             this.closedNodes = new HashSet<>();
 
@@ -72,12 +72,12 @@ public class receiveMessPlanBody extends BeliefGoalPlanBody {
             System.out.println("closed nodes" + closedNodes);
             System.out.println("map " + map);
 
-            //agente.setMap(map);
-            agente.getCapability().getBeliefBase().updateBelief(MAPA,map);
-            //agente.setOpenNodes(openNodes);
-            agente.getCapability().getBeliefBase().updateBelief(OPEN_NODES,openNodes);
-            //agente.setClosedNodes(closedNodes);
-            agente.getCapability().getBeliefBase().updateBelief(CLOSED_NODES,closedNodes);
+            agente.setMap(map);
+            //agente.getCapability().getBeliefBase().updateBelief(MAPA,map);
+            agente.setOpenNodes(openNodes);
+            //agente.getCapability().getBeliefBase().updateBelief(OPEN_NODES,openNodes);
+            agente.setClosedNodes(closedNodes);
+            //agente.getCapability().getBeliefBase().updateBelief(CLOSED_NODES,closedNodes);
 
             setEndState(Plan.EndState.SUCCESSFUL);
         }
