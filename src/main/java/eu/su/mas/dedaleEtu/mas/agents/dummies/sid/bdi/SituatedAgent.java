@@ -18,11 +18,13 @@ import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.proto.AchieveREResponder;
+import javafx.animation.SequentialTransition;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SituatedAgent extends AbstractDedaleAgent {
 
@@ -131,6 +133,10 @@ public class SituatedAgent extends AbstractDedaleAgent {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+                if(Objects.equals(getCurrentPosition().toString(), nodo.toString())){
+                    informDone.setContent("inform done, me he movido");
+                }
+                else informDone.setContent("inform not done, no me he movido");
                 return informDone;
             }
         });

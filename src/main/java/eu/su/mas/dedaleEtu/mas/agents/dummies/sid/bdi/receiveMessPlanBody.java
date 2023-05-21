@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import static eu.su.mas.dedaleEtu.mas.agents.dummies.sid.bdi.Constants.*;
 
 public class receiveMessPlanBody extends BeliefGoalPlanBody {
 
@@ -71,10 +72,12 @@ public class receiveMessPlanBody extends BeliefGoalPlanBody {
             System.out.println("closed nodes" + closedNodes);
             System.out.println("map " + map);
 
-            agente.setMap(map);
+            //agente.setMap(map);
+            agente.getCapability().getBeliefBase().updateBelief(MAPA,map);
             //agente.setOpenNodes(openNodes);
-            agente.getCapability().getBeliefBase().updateBelief("Open Nodes",openNodes);
-            agente.setClosedNodes(closedNodes);
+            agente.getCapability().getBeliefBase().updateBelief(OPEN_NODES,openNodes);
+            //agente.setClosedNodes(closedNodes);
+            agente.getCapability().getBeliefBase().updateBelief(CLOSED_NODES,closedNodes);
 
             setEndState(Plan.EndState.SUCCESSFUL);
         }
