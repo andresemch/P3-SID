@@ -152,9 +152,14 @@ public class SituatedAgent extends AbstractDedaleAgent {
                 String pos = getCurrentPosition().toString();
                 ACLMessage informDone = requ.createReply();
                 if (nodosContiguos.contains(nodo.toString())) {
-                    moveTo(nodo);
-                    informDone.setPerformative(ACLMessage.INFORM);
 
+                    /*ACLMessage agreeMessage = new ACLMessage(1);
+                    send(agreeMessage);*/
+                    //ENVIAR AGREE?
+
+                    boolean moved= moveTo(nodo);
+                    if (moved) {
+                        informDone.setPerformative(ACLMessage.INFORM);
 
                         Object[] content = {pos, nodosContiguos};
                         try {

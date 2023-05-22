@@ -153,6 +153,8 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
 
                 }
             }
+            if(inform != null && inform.getPerformative()==1) System.out.println("AGREE");
+
 
 
         }
