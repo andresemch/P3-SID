@@ -11,7 +11,11 @@ import jade.core.Location;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
+import org.apache.jena.ontology.*;
+import org.apache.jena.rdf.model.ModelFactory;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -32,11 +36,18 @@ public class receiveMessPlanBody extends BeliefGoalPlanBody {
 
     private ArrayList hist;
 
+    OntModel model;
+    OntDocumentManager dm;
+
 
     @Override
     protected void execute() {
         BDIAgent2 agente = (BDIAgent2) this.myAgent;
         ACLMessage msg = agente.receive();
+        model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF);
+        dm = model.getDocumentManager();
+        dm.addAltEntry("ontologia", "file:./onto.owl");
+        model.read("ontologia");
         if (msg != null) {
             System.out.println("The message receive is " + msg.getContent());
 
@@ -56,6 +67,7 @@ public class receiveMessPlanBody extends BeliefGoalPlanBody {
             lobs.remove(0);
 
             String nextNode = null;
+
             this.map.addNode(myPosition, MapRepresentation.MapAttribute.closed);
             for (Couple<Location, List<Couple<Observation, Integer>>> lob : lobs) {
                 String nodeId = String.valueOf(lob.getLeft());
@@ -81,11 +93,14 @@ public class receiveMessPlanBody extends BeliefGoalPlanBody {
             agente.setOpenNodes(openNodes);
             agente.setClosedNodes(closedNodes);
 
+            OntClass nodeClass= model.getOntClass(ONTOLOGY_BASE+"#Nodo");
+            Individual node = nodeClass.createIndividual(ONTOLOGY_BASE+"#"+"Nodo"+openNodes.get(0));
+
             ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
             request.setOntology("onto.owl");
             request.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
             request.addReceiver(new AID("Situated", AID.ISLOCALNAME));
-            request.setContent(openNodes.get(0));
+            request.setContent(node.toString());
             agente.send(request);
             hist.add(request);
 

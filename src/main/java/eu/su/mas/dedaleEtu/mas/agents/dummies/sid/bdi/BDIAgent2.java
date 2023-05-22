@@ -42,7 +42,7 @@ import static eu.su.mas.dedaleEtu.mas.agents.dummies.sid.bdi.Constants.*;
 public class BDIAgent2 extends SingleCapabilityAgent {
 
 
-    private static final String ONTOLOGY_BASE = "http://www.semanticweb.org/priyanka/ontologies/2023/3/untitled-ontology-17";
+
 
     private MapRepresentation mapa;
 

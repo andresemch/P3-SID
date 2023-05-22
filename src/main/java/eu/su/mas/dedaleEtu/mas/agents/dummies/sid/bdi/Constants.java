@@ -17,4 +17,6 @@ public class Constants {
     public static String CLOSED_NODES= "Closed_Nodes";
     public static String MAPA= "Map";
     public static String HISTORICAL="historical";
+
+    public static final String ONTOLOGY_BASE = "http://www.semanticweb.org/priyanka/ontologies/2023/3/untitled-ontology-17";
 }

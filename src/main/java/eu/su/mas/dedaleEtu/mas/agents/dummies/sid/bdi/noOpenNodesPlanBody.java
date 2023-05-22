@@ -13,6 +13,8 @@ import jade.core.behaviours.Behaviour;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
+import org.apache.jena.ontology.*;
+import org.apache.jena.rdf.model.ModelFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,9 +31,15 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
     private Set<String> closedNodes;
 
     private ArrayList hist;
+    OntModel model;
+    OntDocumentManager dm;
 
     @Override
     protected void execute() {
+        model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF);
+        dm = model.getDocumentManager();
+        dm.addAltEntry("ontologia", "file:./onto.owl");
+        model.read("ontologia");
         if (openNodes!=null && openNodes.isEmpty()) {
             System.out.println("MAPA COMPLETADO");
             setEndState(Plan.EndState.SUCCESSFUL);
@@ -89,10 +97,13 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
 
                     List<String> path= map.getShortestPath(position,nodoRequested);
 
+                    OntClass nodeClass= model.getOntClass(ONTOLOGY_BASE+"#Nodo");
+                    Individual node = nodeClass.createIndividual(ONTOLOGY_BASE+"#"+"Nodo"+path.get(0));
+
                     ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
                     request.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
                     request.addReceiver(new AID("Situated", AID.ISLOCALNAME));
-                    request.setContent(path.get(0));
+                    request.setContent(node.toString());
                     agente.send(request);
                     hist.add(request);
 
@@ -128,11 +139,14 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
                             if (nextNode == null) nextNode = nodeId;
                         }
                     }
+
                     if(!openNodes.isEmpty()) {
+                        OntClass nodeClass= model.getOntClass(ONTOLOGY_BASE+"#Nodo");
+                        Individual node = nodeClass.createIndividual(ONTOLOGY_BASE+"#"+"Nodo"+openNodes.get(0));
                         ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
                         request.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
                         request.addReceiver(new AID("Situated", AID.ISLOCALNAME));
-                        request.setContent(openNodes.get(0));
+                        request.setContent(node.toString());
                         agente.send(request);
                         hist.add(request);
                     }

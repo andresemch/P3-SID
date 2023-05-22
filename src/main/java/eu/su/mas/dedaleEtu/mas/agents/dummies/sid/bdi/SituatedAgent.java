@@ -17,8 +17,13 @@ import jade.domain.FIPAException;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import jade.lang.acl.UnreadableException;
 import jade.proto.AchieveREResponder;
 import javafx.animation.SequentialTransition;
+import org.apache.jena.ontology.Individual;
+import org.apache.jena.ontology.OntClass;
+import org.apache.jena.ontology.OntDocumentManager;
+import org.apache.jena.ontology.OntModel;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -26,9 +31,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static eu.su.mas.dedaleEtu.mas.agents.dummies.sid.bdi.Constants.ONTOLOGY_BASE;
+
 public class SituatedAgent extends AbstractDedaleAgent {
 
     AID agentSearched;
+    OntModel model;
+    OntDocumentManager dm;
     @Override
     protected void setup() {
         super.setup();
@@ -107,9 +116,19 @@ public class SituatedAgent extends AbstractDedaleAgent {
 
         seq.addSubBehaviour(new AchieveREResponder(this, mt) {
             protected ACLMessage prepareResultNotification(ACLMessage requ, ACLMessage resp) {
-                gsLocation nodo = new gsLocation("");
+                //OntClass nodeClass= model.getOntClass(ONTOLOGY_BASE+"#Nodo");
+
+                String ind= requ.getContent();
+
+
+                int index = ind.indexOf("#Nodo");
+
+// Extract the remaining string from "#Nodo" onwards
+                String remainingString = ind.substring(index + "#Nodo".length());
+                gsLocation nodo= new gsLocation("");
                 try {
-                    nodo= new gsLocation(requ.getContent());
+                   // nodo= new gsLocation(requ.getContent());
+                    nodo = new gsLocation(remainingString);
                 } catch (NumberFormatException e) {
                     System.out.println("Invalid location format. Please provide a valid digit.");
                     ACLMessage informDone = requ.createReply();
