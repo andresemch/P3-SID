@@ -29,11 +29,11 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
 
     @Override
     protected void execute() {
-        try {
+        /*try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        }
+        }*/
         BDIAgent2 agente = (BDIAgent2) this.myAgent;
         boolean refused=false;
         //List<String> openNodes= (List<String>) agente.getCapability().getBeliefBase().getBelief(OPEN_NODES).getValue();
@@ -69,6 +69,11 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
                     String position = m[0].toString();
                     String nodoRequested= m[1].toString();
 
+                    if (!closedNodes.contains(position)) {
+                        openNodes.remove(position);
+                        closedNodes.add(position);
+                    }
+
                     List<String> path= map.getShortestPath(position,nodoRequested);
                     ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
                     request.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
@@ -76,8 +81,8 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
                     request.setContent(path.get(0));
                     agente.send(request);
 
-                }
-                else {
+
+                } else {
                     //System.out.println("Protocol finished. Rational Effect achieved.Received the following message:" + inform);
                     Object[] m = new Object[0];
                     try {
@@ -111,14 +116,15 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
                     }
                     this.closedNodes.add(position);
 
-                System.out.println("Position: " + position);
-                System.out.println("Nodos contiguos: " + nodosContiguos);
-                System.out.println("Open nodes: " + openNodes);
-                System.out.println("Closed nodes: " + closedNodes);
+                    System.out.println("Position: " + position);
+                    System.out.println("Nodos contiguos: " + nodosContiguos);
+                    System.out.println("Open nodes: " + openNodes);
+                    System.out.println("Closed nodes: " + closedNodes);
                 }
             }
 
             if (openNodes.isEmpty()) {
+                System.out.println("MAPA COMPLETADO");
                 setEndState(Plan.EndState.SUCCESSFUL);
             }
         }
