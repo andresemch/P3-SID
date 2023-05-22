@@ -5,8 +5,10 @@ import bdi4jade.plan.planbody.BeliefGoalPlanBody;
 import dataStructures.tuple.Couple;
 import eu.su.mas.dedale.env.Observation;
 import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation;
+import jade.core.AID;
 import jade.core.Agent;
 import jade.core.Location;
+import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 
@@ -78,6 +80,12 @@ public class receiveMessPlanBody extends BeliefGoalPlanBody {
             //agente.getCapability().getBeliefBase().updateBelief(OPEN_NODES,openNodes);
             agente.setClosedNodes(closedNodes);
             //agente.getCapability().getBeliefBase().updateBelief(CLOSED_NODES,closedNodes);
+
+            ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
+            request.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+            request.addReceiver(new AID("Situated", AID.ISLOCALNAME));
+            request.setContent(openNodes.get(0));
+            agente.send(request);
 
             setEndState(Plan.EndState.SUCCESSFUL);
         }

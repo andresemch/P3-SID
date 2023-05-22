@@ -47,13 +47,6 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
 
         if (closedNodes != null) {
             //System.out.println("ENTRA AQUÍ");
-            if(!refused) {
-                ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
-                request.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
-                request.addReceiver(new AID("Situated", AID.ISLOCALNAME));
-                request.setContent(openNodes.get(0));
-                agente.send(request);
-            }
             ACLMessage inform=agente.receive();
             if (inform != null) {
                 //TENDRÍA QUE SER UNA REPLANIFICACIÓN???????????
@@ -137,6 +130,11 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
                             if (nextNode == null) nextNode = nodeId;
                         }
                     }
+                    ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
+                    request.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+                    request.addReceiver(new AID("Situated", AID.ISLOCALNAME));
+                    request.setContent(openNodes.get(0));
+                    agente.send(request);
                     //this.closedNodes.add(position);
 
                     System.out.println("Position: " + position);
