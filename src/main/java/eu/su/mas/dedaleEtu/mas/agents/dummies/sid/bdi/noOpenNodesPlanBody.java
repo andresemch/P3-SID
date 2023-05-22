@@ -14,6 +14,7 @@ import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -27,36 +28,31 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
 
     private Set<String> closedNodes;
 
+    private ArrayList hist;
+
     @Override
     protected void execute() {
         if (openNodes!=null && openNodes.isEmpty()) {
             System.out.println("MAPA COMPLETADO");
             setEndState(Plan.EndState.SUCCESSFUL);
         }
-        try {
+       /*try {
             Thread.sleep(200);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        }
+        }*/
         BDIAgent2 agente = (BDIAgent2) this.myAgent;
-        boolean refused=false;
-        //List<String> openNodes= (List<String>) agente.getCapability().getBeliefBase().getBelief(OPEN_NODES).getValue();
-        //Set<String> closedNodes = (Set<String>) agente.getCapability().getBeliefBase().getBelief(CLOSED_NODES).getValue();
-        //MapRepresentation map= (MapRepresentation) agente.getCapability().getBeliefBase().getBelief(MAPA).getValue();
-        //System.out.println("Open nodes in FIPA " + agente.getCapability().getBeliefBase().getBelief("Open Nodes").getValue());
 
         map = agente.getMap();
         openNodes = agente.getOpenNodes();
         closedNodes = agente.getClosedNodes();
+        hist= agente.getHist();
 
         if (closedNodes != null) {
-            //System.out.println("ENTRA AQUÍ");
             ACLMessage inform=agente.receive();
-            if (inform != null) {
-                //TENDRÍA QUE SER UNA REPLANIFICACIÓN???????????
+            if (inform != null && inform.getPerformative() != 1) {
+                hist.add(inform);
                 if (inform.getPerformative() == 14){
-                    refused=true;
-                    System.out.println("REFUSED");
                     Object[] m= new Object[0];
                     try {
                         m = (Object[]) inform.getContentObject();
@@ -92,17 +88,16 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
 
 
                     List<String> path= map.getShortestPath(position,nodoRequested);
-                    System.out.println("THE PATH IS: "+path+"\n");
 
                     ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
                     request.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
                     request.addReceiver(new AID("Situated", AID.ISLOCALNAME));
                     request.setContent(path.get(0));
                     agente.send(request);
+                    hist.add(request);
 
                 }
                 else {
-                    //System.out.println("Protocol finished. Rational Effect achieved.Received the following message:" + inform);
                     Object[] m = new Object[0];
                     try {
                         m = (Object[]) inform.getContentObject();
@@ -117,7 +112,6 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
                         closedNodes.add(position);
                     }
 
-                    //SE PODRÍA MOVER DE VECINO EN VECINO Y LUEGO A LOS OPEN NODES??????????
                     nodosContiguos.remove(0);
                     String nextNode = null;
                     this.map.addNode(position, MapRepresentation.MapAttribute.closed);
@@ -140,18 +134,15 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
                         request.addReceiver(new AID("Situated", AID.ISLOCALNAME));
                         request.setContent(openNodes.get(0));
                         agente.send(request);
-                        //this.closedNodes.add(position);
+                        hist.add(request);
                     }
 
-                    System.out.println("Position: " + position);
-                    System.out.println("Nodos contiguos: " + nodosContiguos);
-                    System.out.println("Open nodes: " + openNodes);
-                    System.out.println("Closed nodes: " + closedNodes);
                 }
             }
 
 
         }
+
     }
 
 }

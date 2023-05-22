@@ -107,11 +107,15 @@ public class SituatedAgent extends AbstractDedaleAgent {
 
         seq.addSubBehaviour(new AchieveREResponder(this, mt) {
             protected ACLMessage prepareResultNotification(ACLMessage requ, ACLMessage resp) {
-                //gsLocation l=  new gsLocation(requ.getContent());
-               // moveTo(l);
-                //requ=receive();
-                System.out.println("Responder has received the following message:"+requ);
-                gsLocation nodo= new gsLocation(requ.getContent());
+                gsLocation nodo = new gsLocation("");
+                try {
+                    nodo= new gsLocation(requ.getContent());
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid location format. Please provide a valid digit.");
+                    ACLMessage informDone = requ.createReply();
+                    informDone.setPerformative(ACLMessage.REFUSE); //mensaje mal formateado
+                }
+
 
                 List<Couple<Location, List<Couple<Observation, Integer>>>> obs = observe();
                 List<String> nodosContiguos = new ArrayList<>();
@@ -133,11 +137,15 @@ public class SituatedAgent extends AbstractDedaleAgent {
                     informDone.setPerformative(ACLMessage.INFORM);
 
 
-                    Object[] content = {pos, nodosContiguos};
-                    try {
-                        informDone.setContentObject(content);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        Object[] content = {pos, nodosContiguos};
+                        try {
+                            informDone.setContentObject(content);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    else{
+                        informDone.setPerformative(ACLMessage.FAILURE);
                     }
                 }
                 else{
@@ -152,26 +160,6 @@ public class SituatedAgent extends AbstractDedaleAgent {
                 return informDone;
             }
         });
-
-        /*lb.add(new CyclicBehaviour() {
-            boolean finishedSearch = false;
-            @Override
-            public void action() {
-                while (!finishedSearch) {
-                    try {
-                        agentSearched = searchAgent();
-                        if (agentSearched != null) finishedSearch = true;
-                    } catch (FIPAException e) {
-                        throw new RuntimeException(e);
-                    }
-                    if (finishedSearch) {
-                        System.out.println("Situated ha encontrado a bdi");
-                        System.out.println(agentSearched);
-                    }
-                }
-            }
-
-        });*/
 
         lb.add(seq);
 

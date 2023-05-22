@@ -51,6 +51,8 @@ public class BDIAgent2 extends SingleCapabilityAgent {
     private Set<String> closed_Nodes;
     public ArrayList goals= new ArrayList<>();
 
+    public ArrayList hist= new ArrayList<>();
+
     public BDIAgent2(){
         // Create initial beliefs
         Belief iAmRegistered = new TransientPredicate(I_AM_REGISTERED, false);
@@ -58,6 +60,7 @@ public class BDIAgent2 extends SingleCapabilityAgent {
         Belief openNodes= new TransientBelief(OPEN_NODES,open_Nodes);
         Belief map= new TransientBelief(MAPA,mapa);
         Belief closedNodes= new TransientBelief(CLOSED_NODES,closed_Nodes);
+        Belief historical= new TransientBelief(HISTORICAL,hist);
 
         // Add initial desires
 
@@ -72,10 +75,6 @@ public class BDIAgent2 extends SingleCapabilityAgent {
         SequentialGoal seqGoal= new SequentialGoal(goals);
 
         addGoal(seqGoal);
-        //addGoal(registerGoal);
-       // addGoal(findSituatedGoal);
-        //addGoal(receiveMessGoal); //
-        //addGoal(noOpenNodesGoal);
 
         // Declare goal templates
         GoalTemplate registerGoalTemplate = matchesGoal(registerGoal);
@@ -88,12 +87,10 @@ public class BDIAgent2 extends SingleCapabilityAgent {
                 registerGoalTemplate, RegisterPlanBody.class);
         Plan findSituatedPlan = new DefaultPlan(
                 findSituatedTemplate, FindSituatedPlanBody.class);
-        //Plan keepMailboxEmptyPlan = new DefaultPlan(MessageTemplate.MatchAll(),
-        //        KeepMailboxEmptyPlanBody.class);
         Plan receiveMessPlan = new DefaultPlan(receiveMessGoalTemplate, receiveMessPlanBody.class); //
 
         Plan noOpenNodesPlan = new DefaultPlan(noOpenNodesTemplate, noOpenNodesPlanBody.class);
-        //System.out.println("Open nodes en agente: "+openNodes);
+
 
         // Init plan library
         getCapability().getPlanLibrary().addPlan(registerPlan);
@@ -108,6 +105,7 @@ public class BDIAgent2 extends SingleCapabilityAgent {
         getCapability().getBeliefBase().addBelief(openNodes);
         getCapability().getBeliefBase().addBelief(closedNodes);
         getCapability().getBeliefBase().addBelief(map);
+        getCapability().getBeliefBase().addBelief(historical);
 
         // Add a goal listener to track events
         enableGoalMonitoring();
@@ -134,6 +132,10 @@ public class BDIAgent2 extends SingleCapabilityAgent {
         return (Set<String>) getCapability().getBeliefBase().getBelief(CLOSED_NODES).getValue();
     }
 
+    public ArrayList getHist(){
+        return (ArrayList) getCapability().getBeliefBase().getBelief(HISTORICAL).getValue();
+    }
+
     public void setMap(MapRepresentation m) {
         //this.mapa = m;
         getCapability().getBeliefBase().updateBelief(MAPA,m);
@@ -146,6 +148,10 @@ public class BDIAgent2 extends SingleCapabilityAgent {
     public void setClosedNodes(Set<String> cn) {
         //this.closed_Nodes = cn;
         getCapability().getBeliefBase().updateBelief(CLOSED_NODES,cn);
+    }
+
+    public void setHist (ArrayList h){
+        getCapability().getBeliefBase().updateBelief(HISTORICAL,h);
     }
 
 

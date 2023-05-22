@@ -30,6 +30,8 @@ public class receiveMessPlanBody extends BeliefGoalPlanBody {
      */
     private Set<String> closedNodes;
 
+    private ArrayList hist;
+
 
     @Override
     protected void execute() {
@@ -41,6 +43,7 @@ public class receiveMessPlanBody extends BeliefGoalPlanBody {
             this.map = new MapRepresentation();
             this.openNodes = new ArrayList<>();
             this.closedNodes = new HashSet<>();
+            this.hist= agente.getHist();
 
             Object m= new Object();
             try {
@@ -75,18 +78,18 @@ public class receiveMessPlanBody extends BeliefGoalPlanBody {
             System.out.println("map " + map);
 
             agente.setMap(map);
-            //agente.getCapability().getBeliefBase().updateBelief(MAPA,map);
             agente.setOpenNodes(openNodes);
-            //agente.getCapability().getBeliefBase().updateBelief(OPEN_NODES,openNodes);
             agente.setClosedNodes(closedNodes);
-            //agente.getCapability().getBeliefBase().updateBelief(CLOSED_NODES,closedNodes);
 
             ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
+            request.setOntology("onto.owl");
             request.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
             request.addReceiver(new AID("Situated", AID.ISLOCALNAME));
             request.setContent(openNodes.get(0));
             agente.send(request);
+            hist.add(request);
 
+            agente.setHist(hist);
             setEndState(Plan.EndState.SUCCESSFUL);
         }
     }

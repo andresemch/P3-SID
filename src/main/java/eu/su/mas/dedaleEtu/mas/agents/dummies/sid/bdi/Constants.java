@@ -16,4 +16,5 @@ public class Constants {
     public static String OPEN_NODES= "Open Nodes";
     public static String CLOSED_NODES= "Closed_Nodes";
     public static String MAPA= "Map";
+    public static String HISTORICAL="historical";
 }
