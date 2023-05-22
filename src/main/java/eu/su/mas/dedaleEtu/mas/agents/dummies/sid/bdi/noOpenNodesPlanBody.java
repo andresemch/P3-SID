@@ -29,11 +29,11 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
 
     @Override
     protected void execute() {
-        /*try {
+        try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        }*/
+        }
         BDIAgent2 agente = (BDIAgent2) this.myAgent;
         boolean refused=false;
         //List<String> openNodes= (List<String>) agente.getCapability().getBeliefBase().getBelief(OPEN_NODES).getValue();
@@ -56,6 +56,7 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
             }
             ACLMessage inform=agente.receive();
             if (inform != null) {
+                //TENDRÍA QUE SER UNA REPLANIFICACIÓN???????????
                 if (inform.getPerformative() == 14){
                     refused=true;
                     System.out.println("REFUSED");
@@ -75,14 +76,16 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
                     }
 
                     List<String> path= map.getShortestPath(position,nodoRequested);
+                    System.out.println("THE PATH IS: "+path+"\n");
+
                     ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
                     request.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
                     request.addReceiver(new AID("Situated", AID.ISLOCALNAME));
                     request.setContent(path.get(0));
                     agente.send(request);
 
-
-                } else {
+                }
+                else {
                     //System.out.println("Protocol finished. Rational Effect achieved.Received the following message:" + inform);
                     Object[] m = new Object[0];
                     try {
@@ -98,6 +101,7 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
                         closedNodes.add(position);
                     }
 
+                    //SE PODRÍA MOVER DE VECINO EN VECINO Y LUEGO A LOS OPEN NODES??????????
                     nodosContiguos.remove(0);
                     String nextNode = null;
                     this.map.addNode(position, MapRepresentation.MapAttribute.closed);
