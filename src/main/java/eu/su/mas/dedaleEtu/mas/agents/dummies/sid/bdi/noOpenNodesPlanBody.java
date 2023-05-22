@@ -29,6 +29,10 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
 
     @Override
     protected void execute() {
+        if (openNodes!=null && openNodes.isEmpty()) {
+            System.out.println("MAPA COMPLETADO");
+            setEndState(Plan.EndState.SUCCESSFUL);
+        }
         try {
             Thread.sleep(200);
         } catch (InterruptedException e) {
@@ -130,12 +134,14 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
                             if (nextNode == null) nextNode = nodeId;
                         }
                     }
-                    ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
-                    request.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
-                    request.addReceiver(new AID("Situated", AID.ISLOCALNAME));
-                    request.setContent(openNodes.get(0));
-                    agente.send(request);
-                    //this.closedNodes.add(position);
+                    if(!openNodes.isEmpty()) {
+                        ACLMessage request = new ACLMessage(ACLMessage.REQUEST);
+                        request.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+                        request.addReceiver(new AID("Situated", AID.ISLOCALNAME));
+                        request.setContent(openNodes.get(0));
+                        agente.send(request);
+                        //this.closedNodes.add(position);
+                    }
 
                     System.out.println("Position: " + position);
                     System.out.println("Nodos contiguos: " + nodosContiguos);
@@ -144,10 +150,7 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
                 }
             }
 
-            if (openNodes.isEmpty()) {
-                System.out.println("MAPA COMPLETADO");
-                setEndState(Plan.EndState.SUCCESSFUL);
-            }
+
         }
     }
 
