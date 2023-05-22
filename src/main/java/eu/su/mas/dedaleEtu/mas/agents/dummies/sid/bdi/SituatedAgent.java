@@ -115,8 +115,16 @@ public class SituatedAgent extends AbstractDedaleAgent {
 
                 List<Couple<Location, List<Couple<Observation, Integer>>>> obs = observe();
                 List<String> nodosContiguos = new ArrayList<>();
-                for (Couple node : obs) {
-                    nodosContiguos.add(node.getLeft().toString());
+                for (Couple<Location, List<Couple<Observation, Integer>>> node : obs) {
+                    boolean wind = false;
+                    for (Couple<Observation, Integer> ob : node.getRight()) {
+                        if (ob.getLeft() == Observation.WIND) {
+                            System.out.println("WIND found");
+                            wind = true;
+                            break;
+                        }
+                    }
+                    if (!wind) nodosContiguos.add(node.getLeft().toString());
                 }
                 String pos = getCurrentPosition().toString();
                 ACLMessage informDone = requ.createReply();

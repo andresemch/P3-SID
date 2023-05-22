@@ -30,7 +30,7 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
     @Override
     protected void execute() {
         try {
-            Thread.sleep(500);
+            Thread.sleep(200);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
