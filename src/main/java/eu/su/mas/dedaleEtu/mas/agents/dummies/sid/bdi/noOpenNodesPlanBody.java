@@ -30,7 +30,7 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
     @Override
     protected void execute() {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -69,11 +69,30 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
 
                     String position = m[0].toString();
                     String nodoRequested= m[1].toString();
+                    List<String> nodosContiguos = (List<String>) m[2];
 
                     if (!closedNodes.contains(position)) {
                         openNodes.remove(position);
                         closedNodes.add(position);
                     }
+                    nodosContiguos.remove(0);
+                    String nextNode = null;
+                    this.map.addNode(position, MapRepresentation.MapAttribute.closed);
+                    for (String nodeId : nodosContiguos) {
+                        if (!this.closedNodes.contains(nodeId)) {
+                            if (!this.openNodes.contains(nodeId)) {
+                                this.openNodes.add(nodeId);
+                                this.map.addNode(nodeId, MapRepresentation.MapAttribute.open);
+                                this.map.addEdge(position, nodeId);
+                            } else {
+                                //the node exist, but not necessarily the edge
+                                this.map.addEdge(position, nodeId);
+                            }
+                            if (nextNode == null) nextNode = nodeId;
+                        }
+                    }
+
+
 
                     List<String> path= map.getShortestPath(position,nodoRequested);
                     System.out.println("THE PATH IS: "+path+"\n");
@@ -118,7 +137,7 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
                             if (nextNode == null) nextNode = nodeId;
                         }
                     }
-                    this.closedNodes.add(position);
+                    //this.closedNodes.add(position);
 
                     System.out.println("Position: " + position);
                     System.out.println("Nodos contiguos: " + nodosContiguos);

@@ -134,7 +134,7 @@ public class SituatedAgent extends AbstractDedaleAgent {
                 }
                 else{
                     informDone.setPerformative(ACLMessage.REFUSE);
-                    Object[] content= {pos,nodo};
+                    Object[] content= {pos, nodo, nodosContiguos};
                     try {
                         informDone.setContentObject(content);
                     } catch (IOException e) {
