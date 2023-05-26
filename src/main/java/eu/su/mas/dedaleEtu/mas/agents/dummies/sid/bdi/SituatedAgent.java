@@ -153,8 +153,10 @@ public class SituatedAgent extends AbstractDedaleAgent {
                 ACLMessage informDone = requ.createReply();
                 if (nodosContiguos.contains(nodo.toString())) {
 
-                    /*ACLMessage agreeMessage = new ACLMessage(1);
-                    send(agreeMessage);*/
+                    ACLMessage agreeMessage = new ACLMessage(1);
+                    agreeMessage.setSender(this.getAgent().getAID());
+                    agreeMessage.addReceiver(agentSearched);
+                    send(agreeMessage);
                     //ENVIAR AGREE?
 
                     boolean moved= moveTo(nodo);

@@ -58,6 +58,7 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
 
         if (closedNodes != null) {
             ACLMessage inform=agente.receive();
+            if (inform != null && inform.getPerformative()==1) System.out.println("SE ENVÍA EL AGREE");
             if (inform != null && inform.getPerformative() != 1) {
                 hist.add(inform);
                 if (inform.getPerformative() == 14){
@@ -153,9 +154,6 @@ public class noOpenNodesPlanBody extends BeliefGoalPlanBody  {
 
                 }
             }
-            if(inform != null && inform.getPerformative()==1) System.out.println("AGREE");
-
-
 
         }
 
